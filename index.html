@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>舒尔特方格训练 | 提升专注力与视觉搜索能力</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Tailwind配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#EC4899', // 粉色主色调
+                        secondary: '#10B981', // 绿色辅助色
+                        accent: '#8B5CF6',
+                        danger: '#EF4444',
+                        dark: '#1E293B',
+                        light: '#FDF2F8', // 浅粉色背景
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .grid-square {
+                @apply flex items-center justify-center rounded-lg font-bold text-xl md:text-2xl cursor-pointer transition-all duration-300 shadow-md hover:shadow-lg;
+            }
+            .grid-square-active {
+                @apply bg-primary text-white transform scale-105;
+            }
+            .grid-square-correct {
+                @apply bg-secondary text-white;
+            }
+            .grid-square-incorrect {
+                @apply bg-danger text-white animate-shake;
+            }
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+            }
+            .btn-secondary {
+                @apply bg-white hover:bg-gray-100 text-dark font-medium py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg border border-gray-200;
+            }
+            .btn-difficulty {
+                @apply py-2 px-3 text-sm md:text-base rounded-lg transition-all duration-300 shadow-sm hover:shadow-md;
+            }
+            .btn-difficulty-active {
+                @apply bg-primary text-white;
+            }
+            .btn-difficulty-inactive {
+                @apply bg-white hover:bg-gray-100 text-dark border border-gray-200;
+            }
+            .card {
+                @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl;
+            }
+            .animate-shake {
+                animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            }
+            .animate-pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+            .progress-bar {
+                @apply h-2 bg-gray-200 rounded-full overflow-hidden;
+            }
+            .progress-value {
+                @apply h-full bg-primary rounded-full transition-all duration-300;
+            }
+        }
+        
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0) scale(105%); }
+            20%, 80% { transform: translate3d(2px, 0, 0) scale(105%); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0) scale(105%); }
+            40%, 60% { transform: translate3d(4px, 0, 0) scale(105%); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-pink-50 via-pink-100 to-emerald-50 min-h-screen">
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-th text-primary text-2xl"></i>
+                <h1 class="text-xl font-bold text-dark">舒尔特方格<span class="text-primary">训练</span></h1>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#" class="text-dark hover:text-primary transition-colors">主页</a>
+                <a href="#" class="text-dark hover:text-primary transition-colors">训练记录</a>
+                <a href="#" class="text-dark hover:text-primary transition-colors">关于训练</a>
+            </nav>
+            
+            <button class="md:hidden text-dark text-xl">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-8 md:py-12">
+        <!-- 介绍部分 -->
+        <section class="mb-12 text-center">
+            <h2 class="text-[clamp(1.8rem,4vw,2.8rem)] font-bold text-dark mb-4">提升你的专注力与视觉搜索能力</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-8">舒尔特方格训练是一种经典的注意力训练方法，通过快速查找数字来提升你的视觉搜索速度、注意力广度和集中力。</p>
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <div class="card w-full md:w-[300px]">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fa fa-bolt text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">提升反应速度</h3>
+                    <p class="text-gray-600 text-sm">通过规律性训练，显著提高你的视觉反应和处理速度</p>
+                </div>
+                
+                <div class="card w-full md:w-[300px]">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fa fa-eye text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">扩大视觉广度</h3>
+                    <p class="text-gray-600 text-sm">训练你的眼睛一次能看到和处理更多信息</p>
+                </div>
+                
+                <div class="card w-full md:w-[300px]">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fa fa-brain text-accent text-3xl"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">增强专注力</h3>
+                    <p class="text-gray-600 text-sm">有效提升注意力集中能力和抗干扰能力</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 训练设置 -->
+        <section class="mb-8">
+            <div class="card max-w-3xl mx-auto">
+                <h3 class="text-xl font-bold mb-6 text-dark">训练设置</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">难度级别</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="size-3-btn" class="btn-difficulty btn-difficulty-active">3x3</button>
+                            <button id="size-4-btn" class="btn-difficulty btn-difficulty-inactive">4x4</button>
+                            <button id="size-5-btn" class="btn-difficulty btn-difficulty-inactive">5x5</button>
+                            <button id="size-6-btn" class="btn-difficulty btn-difficulty-inactive">6x6</button>
+                            <button id="size-7-btn" class="btn-difficulty btn-difficulty-inactive">7x7</button>
+                            <button id="size-8-btn" class="btn-difficulty btn-difficulty-inactive">8x8</button>
+                            <button id="size-9-btn" class="btn-difficulty btn-difficulty-inactive">9x9</button>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">选择网格大小：从简单的3x3到极具挑战性的9x9</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 mb-2 font-medium">训练模式</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="numbers-btn" class="btn-primary">数字模式</button>
+                            <button id="letters-btn" class="btn-secondary">字母模式</button>
+                            <button id="mixed-btn" class="btn-secondary">混合模式</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center gap-4">
+                    <button id="start-btn" class="btn-primary px-8 py-3 text-lg">
+                        <i class="fa fa-play mr-2"></i>开始训练
+                    </button>
+                    <button id="reset-btn" class="btn-secondary px-8 py-3 text-lg">
+                        <i class="fa fa-refresh mr-2"></i>重置
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 训练区域 -->
+        <section class="mb-8">
+            <div class="max-w-4xl mx-auto">
+                <!-- 训练状态 -->
+                <div id="status-container" class="mb-6 flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <span id="status-text" class="text-lg font-medium text-dark">准备开始训练</span>
+                        <span id="timer" class="ml-4 text-xl font-bold text-primary">00:00.00</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div>
+                            <span class="text-sm text-gray-600">当前进度:</span>
+                            <span id="progress-text" class="ml-2 font-medium">0/9</span>
+                        </div>
+                        
+                        <div class="progress-bar w-32">
+                            <div id="progress-bar" class="progress-value w-0"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 舒尔特方格容器 -->
+                <div id="grid-container" class="grid grid-cols-3 gap-2 md:gap-3 max-w-3xl mx-auto"></div>
+                
+                <!-- 下一个目标数字 -->
+                <div id="target-container" class="mt-6 text-center">
+                    <p class="text-gray-600 mb-2">请找到并点击:</p>
+                    <div id="target-number" class="inline-block bg-primary/10 text-primary text-3xl font-bold py-2 px-6 rounded-full">1</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 结果统计 -->
+        <section>
+            <div class="card max-w-3xl mx-auto">
+                <h3 class="text-xl font-bold mb-6 text-dark">训练结果</h3>
+                
+                <div id="results-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-pink-50 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">完成时间</p>
+                        <p id="time-result" class="text-2xl font-bold text-primary">00:00.00</p>
+                    </div>
+                    
+                    <div class="bg-emerald-50 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">平均反应时间</p>
+                        <p id="avg-time-result" class="text-2xl font-bold text-secondary">0.00s</p>
+                    </div>
+                    
+                    <div class="bg-red-50 rounded-lg p-4 text-center">
+                        <p class="text-sm text-gray-600 mb-1">错误次数</p>
+                        <p id="errors-result" class="text-2xl font-bold text-danger">0</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <h4 class="font-medium mb-3">历史记录</h4>
+                    <div id="history-container" class="max-h-40 overflow-y-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-pink-100">
+                                    <th class="text-left py-2 px-1">日期</th>
+                                    <th class="text-left py-2 px-1">难度</th>
+                                    <th class="text-left py-2 px-1">时间</th>
+                                    <th class="text-left py-2 px-1">错误</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <tr>
+                                    <td colspan="4" class="py-2 text-center text-gray-500">暂无训练记录</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gradient-to-r from-pink-900 to-emerald-900 text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 专注力训练 | S&S版权所有</p>
+        </div>
+    </footer>
+
+    <!-- 完成训练模态框 -->
+    <div id="complete-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-secondary mb-4">
+                    <i class="fa fa-check text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-dark">训练完成!</h3>
+                <p class="text-gray-600 mt-2">恭喜你完成了本次舒尔特方格训练</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-pink-50 rounded-lg p-4 text-center">
+                    <p class="text-sm text-gray-600">总用时</p>
+                    <p id="modal-time" class="text-xl font-bold text-primary">00:00.00</p>
+                </div>
+                
+                <div class="bg-red-50 rounded-lg p-4 text-center">
+                    <p class="text-sm text-gray-600">错误次数</p>
+                    <p id="modal-errors" class="text-xl font-bold text-danger">0</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-center space-x-4">
+                <button id="modal-close-btn" class="btn-secondary px-6">
+                    关闭
+                </button>
+                <button id="modal-restart-btn" class="btn-primary px-6">
+                    <i class="fa fa-refresh mr-2"></i>再来一次
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 全局变量
+        let gridSize = 3; // 默认3x3
+        let gridType = 'numbers'; // 默认数字模式
+        let isTraining = false;
+        let startTime = 0;
+        let timerInterval;
+        let currentTarget = 1;
+        let totalCells = gridSize * gridSize;
+        let clickTimes = [];
+        let errorCount = 0;
+        let historyRecords = [];
+        
+        // DOM元素
+        const gridContainer = document.getElementById('grid-container');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const statusText = document.getElementById('status-text');
+        const timerDisplay = document.getElementById('timer');
+        const targetNumber = document.getElementById('target-number');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const timeResult = document.getElementById('time-result');
+        const avgTimeResult = document.getElementById('avg-time-result');
+        const errorsResult = document.getElementById('errors-result');
+        const historyBody = document.getElementById('history-body');
+        const completeModal = document.getElementById('complete-modal');
+        const modalTime = document.getElementById('modal-time');
+        const modalErrors = document.getElementById('modal-errors');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalRestartBtn = document.getElementById('modal-restart-btn');
+        
+        // 难度按钮
+        const sizeButtons = {
+            3: document.getElementById('size-3-btn'),
+            4: document.getElementById('size-4-btn'),
+            5: document.getElementById('size-5-btn'),
+            6: document.getElementById('size-6-btn'),
+            7: document.getElementById('size-7-btn'),
+            8: document.getElementById('size-8-btn'),
+            9: document.getElementById('size-9-btn')
+        };
+        
+        // 模式按钮
+        const numbersBtn = document.getElementById('numbers-btn');
+        const lettersBtn = document.getElementById('letters-btn');
+        const mixedBtn = document.getElementById('mixed-btn');
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            createGrid();
+            updateProgress();
+            
+            // 事件监听
+            startBtn.addEventListener('click', toggleTraining);
+            resetBtn.addEventListener('click', resetTraining);
+            modalCloseBtn.addEventListener('click', () => completeModal.classList.add('hidden'));
+            modalRestartBtn.addEventListener('click', restartTraining);
+            
+            // 难度选择事件绑定
+            Object.keys(sizeButtons).forEach(size => {
+                sizeButtons[size].addEventListener('click', () => setDifficulty(parseInt(size)));
+            });
+            
+            // 模式选择
+            numbersBtn.addEventListener('click', () => setGridType('numbers'));
+            lettersBtn.addEventListener('click', () => setGridType('letters'));
+            mixedBtn.addEventListener('click', () => setGridType('mixed'));
+            
+            // 加载历史记录
+            loadHistory();
+        });
+        
+        // 设置难度
+        function setDifficulty(size) {
+            if (isTraining) return;
+            
+            gridSize = size;
+            totalCells = gridSize * gridSize;
+            
+            // 更新按钮样式
+            Object.keys(sizeButtons).forEach(s => {
+                const btn = sizeButtons[s];
+                if (parseInt(s) === size) {
+                    btn.classList.remove('btn-difficulty-inactive');
+                    btn.classList.add('btn-difficulty-active');
+                } else {
+                    btn.classList.remove('btn-difficulty-active');
+                    btn.classList.add('btn-difficulty-inactive');
+                }
+            });
+            
+            // 更新网格布局
+            gridContainer.className = `grid grid-cols-${gridSize} gap-2 md:gap-3 max-w-3xl mx-auto`;
+            
+            // 调整方格大小以适应更大的网格
+            const squares = document.querySelectorAll('.grid-square');
+            squares.forEach(square => {
+                if (gridSize > 6) {
+                    square.classList.remove('text-xl', 'md:text-2xl');
+                    square.classList.add('text-sm', 'md:text-base');
+                } else if (gridSize > 4) {
+                    square.classList.remove('text-xl', 'md:text-2xl');
+                    square.classList.add('text-base', 'md:text-lg');
+                } else {
+                    square.classList.remove('text-sm', 'md:text-base', 'text-base', 'md:text-lg');
+                    square.classList.add('text-xl', 'md:text-2xl');
+                }
+            });
+            
+            resetTraining();
+        }
+        
+        // 设置模式
+        function setGridType(type) {
+            if (isTraining) return;
+            
+            gridType = type;
+            
+            // 更新按钮样式
+            numbersBtn.classList.toggle('btn-primary', type === 'numbers');
+            numbersBtn.classList.toggle('btn-secondary', type !== 'numbers');
+            lettersBtn.classList.toggle('btn-primary', type === 'letters');
+            lettersBtn.classList.toggle('btn-secondary', type !== 'letters');
+            mixedBtn.classList.toggle('btn-primary', type === 'mixed');
+            mixedBtn.classList.toggle('btn-secondary', type !== 'mixed');
+            
+            resetTraining();
+        }
+        
+        // 创建网格
+        function createGrid() {
+            gridContainer.innerHTML = '';
+            
+            let items = [];
+            
+            // 根据模式生成不同内容
+            if (gridType === 'numbers') {
+                for (let i = 1; i <= totalCells; i++) {
+                    items.push(i.toString());
+                }
+            } else if (gridType === 'letters') {
+                // 字母模式支持到9x9 (81个字母)
+                for (let i = 0; i < totalCells; i++) {
+                    if (i < 26) {
+                        items.push(String.fromCharCode(65 + i)); // A-Z
+                    } else if (i < 52) {
+                        items.push(String.fromCharCode(97 + i - 26)); // a-z
+                    } else {
+                        items.push((i - 51).toString()); // 超过52个使用数字
+                    }
+                }
+            } else if (gridType === 'mixed') {
+                for (let i = 1; i <= totalCells; i++) {
+                    if (i % 2 === 0) {
+                        items.push(i.toString());
+                    } else {
+                        const charCode = 64 + ((i + 1) / 2);
+                        items.push(charCode <= 90 ? String.fromCharCode(charCode) : i.toString());
+                    }
+                }
+            }
+            
+            // 打乱数组
+            items = shuffleArray(items);
+            
+            // 创建格子
+            items.forEach(item => {
+                const square = document.createElement('div');
+                square.className = 'grid-square bg-white/90 backdrop-blur-sm';
+                
+                // 根据网格大小调整字体
+                if (gridSize > 6) {
+                    square.classList.add('text-sm', 'md:text-base');
+                } else if (gridSize > 4) {
+                    square.classList.add('text-base', 'md:text-lg');
+                } else {
+                    square.classList.add('text-xl', 'md:text-2xl');
+                }
+                
+                square.textContent = item;
+                square.dataset.value = item;
+                
+                square.addEventListener('click', () => handleSquareClick(square));
+                
+                gridContainer.appendChild(square);
+            });
+            
+            // 更新目标显示
+            updateTargetDisplay();
+        }
+        
+        // 处理方格点击
+        function handleSquareClick(square) {
+            if (!isTraining) return;
+            
+            const value = square.dataset.value;
+            const expectedValue = getExpectedValue(currentTarget);
+            
+            if (value === expectedValue) {
+                // 正确点击
+                square.classList.add('grid-square-correct');
+                
+                // 记录点击时间
+                clickTimes.push(Date.now());
+                
+                // 更新进度
+                currentTarget++;
+                updateProgress();
+                
+                // 检查是否完成
+                if (currentTarget > totalCells) {
+                    completeTraining();
+                    return;
+                }
+                
+                // 更新目标显示
+                updateTargetDisplay();
+                
+            } else {
+                // 错误点击
+                square.classList.add('grid-square-incorrect');
+                errorCount++;
+                errorsResult.textContent = errorCount;
+                
+                // 移除错误状态
+                setTimeout(() => {
+                    square.classList.remove('grid-square-incorrect');
+                }, 500);
+            }
+        }
+        
+        // 获取期望值（处理不同模式）
+        function getExpectedValue(index) {
+            if (gridType === 'numbers') {
+                return index.toString();
+            } else if (gridType === 'letters') {
+                if (index <= 26) {
+                    return String.fromCharCode(64 + index); // A-Z
+                } else if (index <= 52) {
+                    return String.fromCharCode(96 + index - 26); // a-z
+                } else {
+                    return (index - 51).toString(); // 超过52个使用数字
+                }
+            } else if (gridType === 'mixed') {
+                if (index % 2 === 0) {
+                    return index.toString();
+                } else {
+                    const charCode = 64 + ((index + 1) / 2);
+                    return charCode <= 90 ? String.fromCharCode(charCode) : index.toString();
+                }
+            }
+        }
+        
+        // 更新目标显示
+        function updateTargetDisplay() {
+            if (currentTarget <= totalCells) {
+                targetNumber.textContent = getExpectedValue(currentTarget);
+            }
+        }
+        
+        // 更新进度
+        function updateProgress() {
+            const progress = currentTarget - 1;
+            progressText.textContent = `${progress}/${totalCells}`;
+            progressBar.style.width = `${(progress / totalCells) * 100}%`;
+        }
+        
+        // 切换训练状态
+        function toggleTraining() {
+            if (isTraining) {
+                pauseTraining();
+            } else {
+                startTraining();
+            }
+        }
+        
+        // 开始训练
+        function startTraining() {
+            if (isTraining) return;
+            
+            isTraining = true;
+            startTime = Date.now();
+            statusText.textContent = '训练进行中...';
+            startBtn.innerHTML = '<i class="fa fa-pause mr-2"></i>暂停';
+            
+            // 启动计时器
+            startTimer();
+            
+            // 添加活跃状态
+            document.querySelectorAll('.grid-square').forEach(square => {
+                square.classList.add('hover:grid-square-active');
+            });
+        }
+        
+        // 暂停训练
+        function pauseTraining() {
+            if (!isTraining) return;
+            
+            isTraining = false;
+            clearInterval(timerInterval);
+            statusText.textContent = '训练已暂停';
+            startBtn.innerHTML = '<i class="fa fa-play mr-2"></i>继续';
+            
+            // 移除活跃状态
+            document.querySelectorAll('.grid-square').forEach(square => {
+                square.classList.remove('hover:grid-square-active');
+            });
+        }
+        
+        // 完成训练
+        function completeTraining() {
+            pauseTraining();
+            
+            // 计算结果
+            const totalTime = (Date.now() - startTime) / 1000;
+            const avgTime = clickTimes.length > 0 ? 
+                (clickTimes[clickTimes.length - 1] - clickTimes[0]) / (clickTimes.length * 1000) : 0;
+            
+            // 更新结果显示
+            timeResult.textContent = formatTime(totalTime * 1000);
+            avgTimeResult.textContent = avgTime.toFixed(2) + 's';
+            
+            // 显示模态框
+            modalTime.textContent = formatTime(totalTime * 1000);
+            modalErrors.textContent = errorCount;
+            completeModal.classList.remove('hidden');
+            
+            // 保存记录
+            saveRecord(totalTime, errorCount);
+        }
+        
+        // 重置训练
+        function resetTraining() {
+            pauseTraining();
+            
+            currentTarget = 1;
+            errorCount = 0;
+            clickTimes = [];
+            
+            // 重置UI
+            timerDisplay.textContent = '00:00.00';
+            statusText.textContent = '准备开始训练';
+            startBtn.innerHTML = '<i class="fa fa-play mr-2"></i>开始训练';
+            errorsResult.textContent = '0';
+            
+            updateProgress();
+            createGrid();
+        }
+        
+        // 重新开始训练
+        function restartTraining() {
+            completeModal.classList.add('hidden');
+            resetTraining();
+            startTraining();
+        }
+        
+        // 启动计时器
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                const elapsedTime = Date.now() - startTime;
+                timerDisplay.textContent = formatTime(elapsedTime);
+            }, 10);
+        }
+        
+        // 格式化时间显示
+        function formatTime(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = Math.floor((ms % 60000) / 1000);
+            const centiseconds = Math.floor((ms % 1000) / 10);
+            
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
+        }
+        
+        // 打乱数组
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+        
+        // 保存记录
+        function saveRecord(time, errors) {
+            const now = new Date();
+            const record = {
+                date: now.toLocaleString(),
+                difficulty: `${gridSize}x${gridSize}`,
+                mode: gridType,
+                time: formatTime(time * 1000),
+                errors: errors
+            };
+            
+            historyRecords.unshift(record);
+            
+            // 保存到本地存储
+            localStorage.setItem('shulteHistory', JSON.stringify(historyRecords));
+            
+            // 更新历史记录显示
+            updateHistoryDisplay();
+        }
+        
+        // 加载历史记录
+        function loadHistory() {
+            const saved = localStorage.getItem('shulteHistory');
+            if (saved) {
+                historyRecords = JSON.parse(saved);
+                updateHistoryDisplay();
+            }
+        }
+        
+        // 更新历史记录显示
+        function updateHistoryDisplay() {
+            if (historyRecords.length === 0) {
+                historyBody.innerHTML = '<tr><td colspan="4" class="py-2 text-center text-gray-500">暂无训练记录</td></tr>';
+                return;
+            }
+            
+            historyBody.innerHTML = '';
+            
+            historyRecords.forEach(record => {
+                const row = document.createElement('tr');
+                row.className = 'border-b border-pink-100';
+                
+                row.innerHTML = `
+                    <td class="py-2 px-1">${record.date}</td>
+                    <td class="py-2 px-1">${record.difficulty} ${record.mode}</td>
+                    <td class="py-2 px-1 font-medium text-primary">${record.time}</td>
+                    <td class="py-2 px-1 text-danger">${record.errors}</td>
+                `;
+                
+                historyBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
